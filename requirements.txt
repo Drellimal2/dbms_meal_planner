@@ -1,0 +1,24 @@
+# ----------------------
+# Flask
+# ----------------------
+flask
+Flask-WTF
+wtforms
+Flask-SQLAlchemy
+Flask-Login
+psycopg2
+BeautifulSoup
+validators
+
+# ----------------------
+# Testing
+# ----------------------
+mock
+
+
+# ----------------------
+# Production Server
+# ----------------------
+gunicorn
+
+
