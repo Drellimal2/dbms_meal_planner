@@ -5,9 +5,6 @@ flask
 Flask-WTF
 wtforms
 Flask-SQLAlchemy
-Flask-Login
-psycopg2
-BeautifulSoup
 validators
 
 # ----------------------

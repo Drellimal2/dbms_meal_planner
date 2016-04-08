@@ -5,12 +5,10 @@ from flask import render_template, request, redirect, url_for, jsonify, Response
 import validators
 from sqlalchemy import text
 
-@app.route('/')
-def launch():
-    sql = text('c')
-    result = db.engine.execute(sql)
-    
-    print result
+sql = text('c')
+result = db.engine.execute(sql)
+
+print result
 
 app.secret_key ="REST SECRET"
 
