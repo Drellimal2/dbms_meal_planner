@@ -4,11 +4,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
-from models import *
+app.secret_key ="REST SECRET"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqldb://project:project@localhost:8080/epicmealplan'
 
-#TODO
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqldb://<user>:<password>@<host>[:<port>]/<dbname>'
-
-
-
-from app import views, models
+from app import views
