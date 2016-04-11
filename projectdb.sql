@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS plan_generate;
 DROP TABLE IF EXISTS plan_meal_day;
 DROP TABLE IF EXISTS use_recipe;
 DROP TABLE IF EXISTS limits;
-DROP TABLE IF EXISTS user_has_condition;
+DROP TABLE IF EXISTS user_has_restriction;
 DROP TABLE IF EXISTS follow_instruction;
 DROP TABLE IF EXISTS use_ingredients;
 DROP TABLE IF EXISTS within_kitchen;
@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS mealplan;
 DROP TABLE IF EXISTS mealplanday;
 DROP TABLE IF EXISTS recipe;
-DROP TABLE IF EXISTS usercondition;
+DROP TABLE IF EXISTS userrestriction;
 DROP TABLE IF EXISTS instruction;
 DROP TABLE IF EXISTS ingredient;
 DROP TABLE IF EXISTS measurement;
@@ -45,16 +45,17 @@ CREATE TABLE recipe(
 recipe_id INT(11) NOT NULL UNIQUE AUTO_INCREMENT,
 recipe_type VARCHAR(50) NOT NULL,
 recipe_image VARCHAR(255) NOT NULL,
+recipe_name VARCHAR(120) NOT NULL,
 recipe_serving DECIMAL(11,2) NOT NULL,
 recipe_creationdate DATE NOT NULL,
 recipe_caloriecount DECIMAL(11,2) NOT NULL,
 PRIMARY KEY(recipe_id)
 );
 
-CREATE TABLE usercondition(
-condition_id INT(11) NOT NULL UNIQUE AUTO_INCREMENT,
-condition_name VARCHAR(50) NOT NULL,
-PRIMARY KEY(condition_id)
+CREATE TABLE userrestriction(
+restriction_id INT(11) NOT NULL UNIQUE AUTO_INCREMENT,
+restriction_name VARCHAR(50) NOT NULL,
+PRIMARY KEY(restriction_id)
 );
 
 CREATE TABLE instruction(
@@ -72,7 +73,6 @@ PRIMARY KEY(measurement_id)
 CREATE TABLE ingredient(
 ingredient_id INT(11) NOT NULL UNIQUE AUTO_INCREMENT,
 ingredient_name VARCHAR(255) NOT NULL,
-ingredient_measurement DECIMAL(11,2) NOT NULL,
 ingredient_type VARCHAR(30) NOT NULL,
 PRIMARY KEY(ingredient_id)
 );
@@ -106,19 +106,19 @@ FOREIGN KEY(mealplanday_id) references mealplanday(mealplanday_id) on update cas
 FOREIGN KEY(recipe_id) references recipe(recipe_id) on update cascade on delete restrict
 );
 
-CREATE TABLE user_has_condition(
+CREATE TABLE user_has_restriction(
 user_id INT (11) NOT NULL,
-condition_id INT(11) NOT NULL,
-PRIMARY KEY (user_id, condition_id),
+restriction_id INT(11) NOT NULL,
+PRIMARY KEY (user_id, restriction_id),
 FOREIGN KEY(user_id) references user(user_id) on update cascade on delete cascade,
-FOREIGN KEY(condition_id) references usercondition(condition_id) on update cascade on delete restrict
+FOREIGN KEY(restriction_id) references userrestriction(restriction_id) on update cascade on delete restrict
 );
 
 CREATE TABLE limits(
-condition_id INT (11) NOT NULL,
+restriction_id INT (11) NOT NULL,
 ingredient_id INT (11) NOT NULL,
-PRIMARY KEY (condition_id, ingredient_id),
-FOREIGN KEY(condition_id) references usercondition(condition_id) on update cascade on delete cascade,
+PRIMARY KEY (restriction_id, ingredient_id),
+FOREIGN KEY(restriction_id) references userrestriction(restriction_id) on update cascade on delete cascade,
 FOREIGN KEY(ingredient_id) references ingredient(ingredient_id) on update cascade on delete restrict
 );
 
@@ -147,3 +147,29 @@ PRIMARY KEY(ingredient_id, kitchen_id),
 FOREIGN KEY(ingredient_id) references ingredient(ingredient_id) on update cascade on delete cascade,
 FOREIGN KEY(kitchen_id) references kitchen(kitchen_id) on update cascade on delete restrict
 );
+
+/* Data Entry */
+
+INSERT INTO measurement (measurement_name) VALUES ("Cup");
+INSERT INTO measurement (measurement_name) VALUES ("Teaspoon");
+INSERT INTO measurement (measurement_name) VALUES ("Tablespoon");
+INSERT INTO measurement (measurement_name) VALUES ("Pound");
+INSERT INTO measurement (measurement_name) VALUES ("Quart");
+INSERT INTO measurement (measurement_name) VALUES ("Ounce");
+INSERT INTO measurement (measurement_name) VALUES ("Pint");
+INSERT INTO measurement (measurement_name) VALUES ("Millilitre");
+INSERT INTO measurement (measurement_name) VALUES ("Litre");
+
+INSERT INTO userrestriction (restriction_name) VALUES("Diabeties");
+INSERT INTO userrestriction (restriction_name) VALUES("Hypertension");
+INSERT INTO userrestriction (restriction_name) VALUES("Muslim");
+INSERT INTO userrestriction (restriction_name) VALUES("Hindu");
+INSERT INTO userrestriction (restriction_name) VALUES("Vegetarian");
+INSERT INTO userrestriction (restriction_name) VALUES("Vegan");
+INSERT INTO userrestriction (restriction_name) VALUES("Lactose Intolerant");
+INSERT INTO userrestriction (restriction_name) VALUES("Peanut Allergy");
+INSERT INTO userrestriction (restriction_name) VALUES("Egg Allergy");
+INSERT INTO userrestriction (restriction_name) VALUES("Wheat Allergy");
+INSERT INTO userrestriction (restriction_name) VALUES("Soy Allergy");
+INSERT INTO userrestriction (restriction_name) VALUES("Fish Allergy");
+INSERT INTO userrestriction (restriction_name) VALUES("Shellfish Allergy");

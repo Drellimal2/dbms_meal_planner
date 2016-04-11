@@ -12,3 +12,4 @@ class SignUpForm(Form):
     phonenumber = TextField("Phone Number",[validators.Required()])
     dob = TextField("Date Of Birth",[validators.Required()])
     submit = SubmitField("Submit")
+
