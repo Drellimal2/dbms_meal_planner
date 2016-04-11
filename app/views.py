@@ -8,6 +8,13 @@ from sqlalchemy import text
 
 @app.route('/')
 def home():
+    sql = text('call GetAllUserRestrictions("John","Doe");')
+    result = db.engine.execute(sql)
+    # print result
+    names = []
+    for row in result:
+        names.append(row[0])
+    print names
     return render_template("index.html")
     
 

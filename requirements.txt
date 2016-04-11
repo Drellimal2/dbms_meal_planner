@@ -19,3 +19,7 @@ mock
 gunicorn
 
 
+# ----------------------
+# OTHER
+# ----------------------
+faker-factory
