@@ -8,7 +8,7 @@ Created on Sun Apr 10 23:55:10 2016
 from random import randint, sample
 from faker import Factory
 
-NUM_USERS = 50000
+NUM_USERS = 500000
 NUM_RECIPES = 1000000
 
 

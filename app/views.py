@@ -72,9 +72,25 @@ def newRecipe():
     else:
         return render_template("recipe.html",form=form)
 
+@app.route('/users',methods=["GET"])
+def users():
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("",[])
+    results = cursor.fetchall()
+    cursor.close()
+    connection.commit()
+    return results
+
 @app.route('/recipes', methods=["GET"])
 def recipes():
-    return render_template("")
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("",[])
+    results = cursor.fetchall()
+    cursor.close()
+    connection.commit()
+    return results
 
 @app.route('/generate_mealplan',methods=[""])
 def generateMealPlan():
