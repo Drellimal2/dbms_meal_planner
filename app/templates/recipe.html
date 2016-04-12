@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block js %}
+{% endblock %}
+
+{% block main %}
+<div class="container">
+  <h2>Sign Up</h2>
+  <form action="{{ url_for('newRecipe') }}" method=post enctype="multipart/form-data" class="form-group">
+    {{ form.uploadedfile.label }}
+    {{ form.uploadedfile(class="btn btn-default")}}
+
+    {{ form.name.label }}
+    {{ form.name(class="form-control")}}
+
+    {{ form.recipetype.label }}
+    {{ form.recipetype(class="form-control")}}
+
+    {{ form.serving.label }}
+    {{ form.serving(class="form-control")}}
+
+    {{ form.preptime.label }}
+    {{ form.preptime(class="form-control")}}
+
+    {{ form.caloriecount.label }}
+    {{ form.caloriecount(class="form-control")}}
+    <br>
+    {{ form.submit(class="btn btn-default")}}
+  </form>
+</div>
+{% endblock %}

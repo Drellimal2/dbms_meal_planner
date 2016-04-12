@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+  <h2>Online Meal Planner</h2>
+</div>
+<div class="container">
+    <button class="btn btn-info">{{url_for('create_recipe')}}</button>
+</div>
+{% endblock %}

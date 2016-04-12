@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  
+
   <link rel="stylesheet" href="/static/css/bootstrap.min.css">
   <link rel="stylesheet" href="/static/css/bootstrap-theme.min.css">
   <script src="static/js/angular.min.js"></script>
@@ -15,8 +15,32 @@
   <script src="static/js/bootstrap.min.js"></script>
 </head>
 
-<body class="container">
-  <div id="main" role="main">
+<div class="container2">
+ <style>
+  body{
+    background-image: url("static/images/recipe_bg.jpg");
+  }
+
+  .container2{
+    border: solid;
+    padding:5px;
+    margin-top:70px;
+    margin-left:25%;
+    background-color:#ffd480;
+    width:50%;
+    height:100%;
+  }
+
+ h2{
+   text-align:center;
+ }
+
+ #submit{
+  text-align:center;
+ }
+</style>
+
+  <!--<div id="container2" role="main">-->
     {% block main %}{% endblock %}
   </div>
   </body>

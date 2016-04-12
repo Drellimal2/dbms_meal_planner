@@ -1,4 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Apr 10 23:55:10 2016
+
+@author: Dane
+"""
+
+from random import randint, sample
 from faker import Factory
+
+NUM_USERS = 50000
+NUM_RECIPES = 1000000
+
 
 ingredient_list = """asparagus
 apples
@@ -129,30 +141,192 @@ Wine
 Walnuts
 Yogurt
 Ziti
-Zucchin
+Zucchini"""
+
+recipe_names = """Lemon drizzle cake
+Ultimate chocolate cake
+Chilli con carne
+Yummy scrummy carrot cake
+Best-ever brownies
+Spiced carrot & lentil soup
+Chicken & chorizo jambalaya
+Summer-in-winter chicken
+Spicy root & lentil casserole
+Mustard-stuffed chicken
+Classic scones with jam & clotted cream
+Red lentil, chickpea & chilli soup
+Falafel burgers
+Chicken biryani
+Raspberry Bakewell cake
+Chocolate brownie cake
+Classic Victoria sandwich
+Creamy courgette lasagne
+One-pot chicken chasseur
+Unbelievably easy mince pies
+Asian Grilled Salmon
+Chicken Parmesan
+Macaroni and Cheese
+Chicken Pot Pie
+Chicken Cacciatore
+Salisbury Steak
+Chocolate Pretzel Peanut Butter Squares
+Blackberry Cobbler
+Roast Chicken
+Sweet and Sour Chicken
+Restaurant-Style Salsa
+Shrimp Scampi with Linguini
+Parmesan-Crusted Pork Chops
+Broccoli Cheese Soup
+Chicken Tetrazzini
+Cheesecake
+Roasted Brussels Sprouts
+Lemon Ricotta Cookies
+Lasagna Rolls
+Chicken Tortilla Casserole
+Baked Potato Casserole
+Baked Penne with Roasted Vegetables
+Chicken Spaghetti
+Fettuccine Alfredo
+Lemon Yogurt Cake
+Pot Roast
+Guacamole
+Chicken-Fried Steak
+Tomato Soup
+Garlic Roasted Potatoes
+Chicken Enchiladas
+Roman-Style Chicken
+Lemon-Garlic Shrimp and Grits
+Chicken Piccata
+Beef and Vegetables
+Beef Teriyaki
+Scrambled Eggs
+Egg Casserole
+Fish Chowder
+Fish and Chips
+Mediterranean Fish Cakes
+Steamed Tuna Fish
+Macadamia Nut Cookies
+Pistachio Nut Cake
 """
 
 fake = Factory.create()
 
 BASE_INSERT = "INSERT INTO {} ({}) VALUES({});"
 
+def add_quotes(word):
+	return "\"" + word + "\""
+
+
 def generate_user(num):
+	f = open("db_data.sql", "w")
 	table = "user"
 	fields = ['user_firstname', 'user_lastname', 'user_address', 'user_email', 'user_password', 'user_phonenumber', 'user_image', 'user_dob']
 	image = "https://assets-cdn.github.com/images/modules/logos_page/Octocat.png"
 	for x in range(num):
-		vals = [fake.first_name(), fake.last_name(), fake.address(), fake.email(), "password", fake.phone_number(), image, fake.date()]
+		fake.seed(x)
+		vals = [add_quotes(fake.first_name()), add_quotes(fake.last_name()), add_quotes(fake.address()), add_quotes(fake.email()), add_quotes("password"), add_quotes(fake.phone_number()), add_quotes(image), add_quotes(fake.date())]
 
-		print BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))
+		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
+	f.close()
 
 def generate_ingr():
+	f = open("db_data.sql", "a+")
 	table = "ingredient"
 	fields = ['ingredient_name', 'ingredient_type']
-	types = ["meat", "spice", "veg", "dairy", "fruit"]
+	types = ['"meat"', '"gluten"', '"poultry"', '"shellfish"', '"fish"', '"nuts"', '"dairy"', '"pork"', '"beef"', '"wheat"']
 	ingredients = ingredient_list.split("\n")
 	for x in range(len(ingredients)):
-		vals = [ingredients[x], types[x%5]]
-		print BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))
-	
-#generate_user(5)
+		vals = [ingredients[x], types[randint(0,9)]]
+		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
+	f.close()
+
+
+def generate_recipe():
+	f = open("db_data.sql", "a+")
+	table = "recipe"
+	fields = ["recipe_name","recipe_type", "recipe_preptime", "recipe_image","recipe_serving", "recipe_creationdate", "recipe_caloriecount"]
+	image = add_quotes("https://assets-cdn.github.com/images/modules/logos_page/Octocat.png")
+	recipes = recipe_names.split("\n")
+	types = ["Breakfast", "Lunch", "Dinner", "Snack"]
+	for x in range(len(recipes)):
+		preptime = str(randint(10, 250))
+		calories = str(randint(250, 2000))
+		serving = str(randint(1,5))
+		rec_type = str(types[randint(0,3)])
+		recipe = add_quotes(recipes[x].strip())
+		vals = [recipe, rec_type, preptime, image, serving, add_quotes(fake.date()), calories]
+		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
+	for x in range(NUM_RECIPES-len(recipes)):
+		fake.seed(x)
+		preptime = str(randint(10, 250))
+		calories = str(randint(250, 2000))
+		serving = str(randint(1,5))
+		recipe = add_quotes(fake.word())
+		vals = [recipe, preptime, image, serving, fake.date(), calories]
+		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
+	f.close()
+
+def generate_instr():
+	verbs = ['Add', 'adjust', 'arrange', 'bake', 'baste', 'batter', 'beat', 'blend', 'boil', 'braise', 'break', 'broil', 'brush', 'burn', 'carve', 'chill', 'chop', 'clarify', 'crack', 'cook', 'cool', 'cover', 'cut', 'Debone', 'dice', 'discard', 'drain', 'dress', 'fillet', 'flour', 'fold', 'freeze', 'fry', 'garnish', 'glaze', 'grate', 'grind', 'grill', 'gut', 'heat', 'knead', 'Lower', 'macerate', 'marinate', 'mash', 'melt', 'mince', 'mix', 'parboil', 'peel', 'pickle', 'place', 'poach', 'pour', 'prepare', 'put', 'reduce', 'refrigerate', 'remove', 'rinse', 'roast', 'roll out', 'roll up', 'rub', 'Salt', 'saut\xc3\xa9', 'scoop', 'scorch', 'scramble', 'season', 'serve', 'set', 'simmer', 'skim', 'slice', 'soak', 'spice', 'spoon', 'spread', 'sprinkle', 'squeeze', 'steam', 'stir', 'strain', 'sugar', 'sweeten', 'taste', 'thaw', 'thicken', 'toast', 'try', 'warm', 'wash', 'water down', 'whip', 'whisk', 'wipe']
+
+	ingredients = ingredient_list.split("\n")
+	table = "instruction"
+	fields = ["instruction_details"]
+	instruction_format = "{} the {} for {} minutes."
+	f = open("db_data.sql", "a+")
+	for verb in verbs:
+		for ingredient in ingredients:
+			mins = randint(1, 75)
+			vals = [add_quotes(instruction_format.format(verb, ingredient, mins))]
+			f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
+
+	f.close()
+
+def generate_recipe_instr():
+	f = open("db_data.sql", "a+")
+	table = "follow_instruction"
+	fields = ["recipe_id", "instruction_id","instruction_order"]
+	for x in range(1, NUM_RECIPES - 1):
+		insts = randint(2,9)
+		used = set([])
+		for y in range(insts):
+			while True:
+				inst = randint(1, 12610)
+				if inst in used:
+					continue
+				else:
+					vals = [str(x), str(inst), str(y+1)]
+					used.add(inst)
+					f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
+					break
+
+	f.close()
+
+def generate_ingr_rec():
+	f = open("db_data.sql", "a+")
+	table = "use_ingredients"
+	fields = [ "recipe_id", "ingredient_id", "measurement_id", "ingredient_quantity"]
+	for x in range(1, NUM_RECIPES + 1):
+		ingrs = randint(1,7)
+		used = set([])
+
+		for y in range(ingrs):
+			meas = randint(1,9)
+			quantity = randint(1,1000) / 10.0
+			while True:
+				ingr = randint(1, 130)
+				if ingr in used:
+					continue
+				else:
+					vals = [str(x), str(ingr), str(meas), str(quantity)]
+					used.add(ingr)
+					f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
+					break
+	f.close()
+
+generate_user(NUM_USERS)
+generate_recipe()
 generate_ingr()
+generate_instr()
+generate_ingr_rec()
+generate_recipe_instr()
