@@ -11,7 +11,7 @@ import json
 import time
 import random
 
-engine = create_engine('mysql://project:project@localhost:8080/epicmealplan')
+engine = create_engine('mysql://project:project@localhost:3306/epicmealplan')
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif','png'])
 
@@ -111,11 +111,11 @@ def getmealplanrecipes(mtype):
     if request.method=="GET":
         connection = engine.raw_connection()
         cursor = connection.cursor()
-        
+
         cursor.callproc("GetWeekRecipesByType",[str(mtype)])
         result = cursor.fetchall()
         print result
-        
+
         cursor.close()
         connection.commit()
         recipes = []
@@ -134,7 +134,7 @@ def recipes():
         cursor.callproc("GetRecipesLike",[str(form.name.data)])
         result = cursor.fetchall()
         print result
-        
+
         cursor.close()
         connection.commit()
         recipes = []
