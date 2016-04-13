@@ -43,6 +43,19 @@ END //
 DELIMETER ;
 
 DELIMITER //
+CREATE PROCEDURE GetIngrMeasurFromRecipe(IN id INT)
+BEGIN (
+SELECT measurement.measurement_name, ingredient.ingredient_name FROM measurement 
+JOIN ingredient JOIN use_ingredients ON
+use_ingredients.recipe_id IN 
+(SELECT use_ingredients.recipe_id FROM use_ingredients WHERE use_ingredients.recipe_id=1000)
+AND measurement.measurement_id=use_ingredients.measurement_id 
+AND ingredient.ingredient_id=use_ingredients.ingredient_id
+);
+END //
+DELIMETER ;
+
+DELIMITER //
 CREATE PROCEDURE GetAllUserRestrictions(IN firstname VARCHAR(255), IN lastname VARCHAR(255))
 BEGIN (SELECT userrestriction.restriction_name
 FROM user JOIN user_has_restriction JOIN userrestriction
@@ -50,6 +63,15 @@ ON user.user_id=user_has_restriction.user_id AND user_has_restriction.restrictio
 WHERE user.user_firstname=firstname AND user.user_lastname=lastname);
 END //
 DELIMITER ;
+
+DELIMETER //
+CREATE PROCEDURE ShowAvoidedIngredients(IN restriction VARCHAR(50))
+BEGIN (SELECT ingredient.ingredient_name
+FROM userrestriction JOIN limits JOIN Ingredient
+ON userrestriction.restriction_id=limits.restriction_id AND limits.ingredient_id=ingredient.ingredient_id 
+WHERE userrestriction.restriction_name = restriction);
+END //
+DELIMITER;
 
 DELIMITER //
 CREATE PROCEDURE GetUnderSpecficCalorieCount(IN caloriecount INT(11))
@@ -112,3 +134,33 @@ BEGIN (SELECT *
 );
 END //
 DELIMITER ;
+
+DELIMITER//
+CREATE TRIGGER kitchen_trigger
+AFTER insert ON user
+FOR EACH ROW
+BEGIN
+INSERT into kitchen values (0)
+INSERT into user_kitchen values(
+(SELECT LAST_INSERT_ID() FROM user LIMIT (1)
+)
+(SELECT LAST_INSERT_ID() FROM kitchen LIMIT (1)
+)
+);
+
+END//
+DELIMITER;
+
+DELIMITER //
+CREATE PROCEDURE recipeinstruction (IN recipe_id INT ) 
+BEGIN (
+
+)
+
+
+
+
+
+
+END//
+DELIMITER;
