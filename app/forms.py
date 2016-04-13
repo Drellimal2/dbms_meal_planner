@@ -27,5 +27,9 @@ class RecipeForm(Form):
     caloriecount = TextField("Calorie Count",[validators.Required()])
     submit = SubmitField("Submit")
 
+class RecipesForm(Form):
+    name = TextField("Enter a recipe name")
+    submit = SubmitField("Submit")
+
 class IngredientForm(Form):
     submit = SubmitField("Submit")

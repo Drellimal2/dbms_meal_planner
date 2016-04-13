@@ -26,6 +26,15 @@ END //
 DELIMITER ;
 
 DELIMITER //
+CREATE PROCEDURE GetRecipesLike(IN name VARCHAR(120))
+BEGIN (
+    SELECT * from recipe WHERE recipe.recipe_name LIKE name
+    ORDER BY recipe.recipe_creationdate DESC
+);
+END //
+DELIMITER ;
+
+DELIMITER //
 CREATE PROCEDURE GetAllUserRestrictions(IN firstname VARCHAR(255), IN lastname VARCHAR(255))
 BEGIN (SELECT userrestriction.restriction_name
 FROM user JOIN user_has_restriction JOIN userrestriction
