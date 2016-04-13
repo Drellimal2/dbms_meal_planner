@@ -96,7 +96,7 @@ def newIngredient():
 # @app.route('/users',methods=["GET"])
 # def users():
 #     connection = engine.connect()
-#     result = connection.execute("select * from user LIMIT 200")
+#     result = connection.execute("select * from user")
 #     users = []
 #     for row in result:
 #         users.append(row)
@@ -109,7 +109,6 @@ def recipes():
     if request.method=="POST":
         connection = engine.raw_connection()
         cursor = connection.cursor()
-        print form.name.data
         cursor.callproc("GetRecipesLike",[str(form.name.data)])
         result = cursor.fetchall()
         cursor.close()
@@ -142,6 +141,19 @@ def filteredrecipes():
     print recipes
     return render_template("recipes.html",recipes=recipes)
 
+@app.route('/recipedetails/<recipeid>',methods=["GET"])
+def recipedetails(recipeid):
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetRecipeById",[str(recipeid)])
+    result = cursor.fetchall()
+    cursor.close()
+    connection.commit()
+    recipes = []
+    for row in result:
+        recipes.append(row)
+    return render_template("recipedetails.html",recipes=recipes)
+
 @app.route('/measurements',methods=["GET"])
 def measurements():
     connection = engine.connect()
@@ -155,12 +167,13 @@ def measurements():
 @app.route('/ingredients',methods=["GET"])
 def ingredients():
     connection = engine.connect()
-    result = connection.execute("select ingredient.ingredient_name from ingredient")
+    result = connection.execute("select * from ingredient")
     ingredients = []
     for row in result:
-        ingredients.append(row['ingredient_name'])
+        if row['ingredient_id'] != 96:
+            ingredients.append(row['ingredient_name'])
     connection.close()
-    return ingredients
+    return jsonify({"ingredients":ingredients})
 
 @app.route('/restrictions',methods=["GET"])
 def restrictions():

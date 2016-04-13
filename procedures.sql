@@ -35,6 +35,14 @@ END //
 DELIMITER ;
 
 DELIMITER //
+CREATE PROCEDURE GetRecipeById(IN id INT)
+BEGIN (
+SELECT * FROM recipe WHERE recipe.recipe_id=id
+);
+END //
+DELIMETER ;
+
+DELIMITER //
 CREATE PROCEDURE GetAllUserRestrictions(IN firstname VARCHAR(255), IN lastname VARCHAR(255))
 BEGIN (SELECT userrestriction.restriction_name
 FROM user JOIN user_has_restriction JOIN userrestriction

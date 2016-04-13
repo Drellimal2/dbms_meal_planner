@@ -86,3 +86,47 @@ angular.module('MealPlanner').controller('RecipesCtrl',['$scope','Service',funct
         $scope.recipes = recipes;
     })
 }]);
+
+angular.module('MealPlanner').controller('NewRecipeCtrl', ['$scope', 'Service', function ($scope, Service){
+	Service.getMeasurements().then(function (measurements) {
+		console.log(measurements);
+		$scope.measurements = measurements.measurements;
+	});
+
+	Service.getIngredients().then(function (ingredients) {
+		console.log(ingredients);
+		$scope.ingredients = ingredients.ingredients;
+	});
+
+	$scope.ingredient= [];
+    $scope.instructions = [];
+    
+	$scope.add_ingredient = function(){
+	    var x = {
+			quantity: 1,
+			measurement: '',
+			ingredient: ''
+
+		};
+		$scope.ingredient.push(
+		   x
+		);
+		console.log("hi");
+	};
+    
+    
+	$scope.add_instruction = function(){
+	    var x = {
+			quantity: 1,
+			measurement: '',
+			ingredient: ''
+
+		};
+		$scope.instructions.push(
+		   x
+		);
+		console.log("hi");
+	};
+
+
+}]);
