@@ -263,7 +263,7 @@ def generate_recipe():
 		serving = str(randint(1,5))
 		recipe = add_quotes(fake.word())
 		rec_type = add_quotes(types[randint(0,3)])
-		vals = [recipe, preptime, image, serving, add_quotes(fake.date()), calories]
+		vals = [recipe, rec_type, preptime, image, serving, add_quotes(fake.date()), calories]
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
 

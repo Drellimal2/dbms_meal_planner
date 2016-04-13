@@ -38,6 +38,7 @@ CREATE TABLE mealplanday(
 mealplanday_id INTEGER(11) NOT NULL UNIQUE AUTO_INCREMENT,
 day VARCHAR(30) NOT NULL,
 mealtype VARCHAR(50) NOT NULL,
+caloriecount INT(11) NOT NULL,
 PRIMARY KEY(mealplanday_id)
 );
 
