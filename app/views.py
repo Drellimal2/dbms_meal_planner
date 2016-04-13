@@ -123,7 +123,7 @@ def recipes():
     # for row in result:
     #     recipes.append(row)
     # connection.close()
-        return render_template("recipes.html",recipes=recipes)
+        return render_template("recipes.html",form=form,recipes=recipes)
     else:
         return render_template("recipes.html",form=form)
 
