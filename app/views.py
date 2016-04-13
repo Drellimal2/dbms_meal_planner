@@ -173,11 +173,18 @@ def recipedetails(recipeid):
     cursor.callproc("GetRecipeById",[str(recipeid)])
     result = cursor.fetchall()
     cursor.close()
+    cursor = connection.cursor()
+    cursor.callproc("recipeinstruction",[str(recipeid)])
+    result_instr = cursor.fetchall()
+    cursor.close()
     connection.commit()
     recipes = []
+    instr = []
     for row in result:
         recipes.append(row)
-    return render_template("recipedetails.html",recipes=recipes)
+    for row in result_instr:
+        instr.append(row)
+    return render_template("recipedetails.html",recipes=recipes, instrs=instr )
 
 @app.route('/seecredenials/<recipeid>',methods=["GET"])
 def seecredentials(recipeid):
