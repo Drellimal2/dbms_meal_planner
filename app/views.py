@@ -11,7 +11,7 @@ import json
 import time
 import random
 
-engine = create_engine('mysql://project:project@localhost:8081/epicmealplan')
+engine = create_engine('mysql://project:project@localhost:3306/epicmealplan')
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif','png'])
 
