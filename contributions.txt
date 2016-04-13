@@ -11,7 +11,7 @@ BackEnd Work
 Javier McCarthy - 620066708
 
 Documentation
-Procedure and Query creation 
+Procedure and Query creation
 BackEnd Work
 
 Dane Miller - 620070179
@@ -23,6 +23,7 @@ Procedure and Query creation
 Execution of generated SQL file of the required records for tables
 BackEnd Work with Flask to communicate with Database and FrontEnd
 FrontEnd Work with AngularJS, BootStrap styling
+Addition of feature which restricts ingredients from being available to a user based on their restrictions or conditions
 
 Justen Morgan - 620070138
 
@@ -33,3 +34,4 @@ Procedure and Query creation
 Execution of Generated SQL file of the required records for tables
 BackEnd Work with Flask to communicate with Database and FrontEnd
 FrontEnd Work with AngularJS, BootStrap styling
+Addition of feature to filter by calorie count for recipes
