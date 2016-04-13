@@ -4,8 +4,8 @@
 {% endblock %}
 
 {% block main %}
-<div class="container">
-  <h2>Sign Up</h2>
+<div class="container" ng-controller="MeasurementCtrl">
+  <h2>Add Recipe</h2>
   <form action="{{ url_for('newRecipe') }}" method=post enctype="multipart/form-data" class="form-group">
     {{ form.uploadedfile.label }}
     {{ form.uploadedfile(class="btn btn-default")}}

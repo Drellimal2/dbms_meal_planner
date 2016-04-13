@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block js %}
+{% endblock %}
+
+{% block main %}
+<div class="container" ng-controller="IngredientCtrl">
+  <h2>Add Ingredient</h2>
+  <form class="form-group">
+      <fieldset data-ng-repeat="field in fields">
+      <select class="pull-left"
+      ng-options="measurement for measurement in measurements track by measurement.id"
+      ng-model="data.selectedOption">
+      </select>
+      <button class="btn btn-xs btn-info" ng-click="addNewField()">+</button>
+      <button class="btn btn-xs btn-danger" ng-show="$last" ng-hide="$first" ng-click="removelastField()">-</button>
+  </fieldset>
+      <br>
+      {{ form.submit(class="btn btn-default")}}
+    </form>
+  </div>
+  {% endblock %}

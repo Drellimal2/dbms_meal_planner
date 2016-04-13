@@ -26,3 +26,6 @@ class RecipeForm(Form):
     preptime = TextField("Preparation Time",[validators.Required()])
     caloriecount = TextField("Calorie Count",[validators.Required()])
     submit = SubmitField("Submit")
+
+class IngredientForm(Form):
+    submit = SubmitField("Submit")

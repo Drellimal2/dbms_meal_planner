@@ -1,7 +1,7 @@
 import os
 from app import app
 from app import db
-from app.forms import SignUpForm, LoginForm, RecipeForm
+from app.forms import SignUpForm, LoginForm, RecipeForm, IngredientForm
 from flask import render_template, request, redirect, url_for, jsonify, Response
 import validators
 from sqlalchemy import text
@@ -72,25 +72,60 @@ def newRecipe():
     else:
         return render_template("recipe.html",form=form)
 
+@app.route('/create_ingredient',methods=["GET","POST"])
+def newIngredient():
+    form = IngredientForm(request.form)
+    return render_template("ingredient.html",form=form)
+
 @app.route('/users',methods=["GET"])
 def users():
-    connection = engine.raw_connection()
-    cursor = connection.cursor()
-    cursor.callproc("",[])
-    results = cursor.fetchall()
-    cursor.close()
-    connection.commit()
-    return results
+    connection = engine.connect()
+    result = connection.execute("select user.user_firstname,user_lastname from user")
+    users = []
+    for row in result:
+        users.append(row['user_firstname']+" "+row['user_lastname'])
+    connection.close()
+    return users
 
 @app.route('/recipes', methods=["GET"])
 def recipes():
-    connection = engine.raw_connection()
-    cursor = connection.cursor()
-    cursor.callproc("",[])
-    results = cursor.fetchall()
-    cursor.close()
-    connection.commit()
-    return results
+    connection = engine.connect()
+    result = connection.execute("select recipe.recipe_name from recipe")
+    recipes = []
+    for row in result:
+        recipes.append(row['recipe_name'])
+    connection.close()
+    return recipes
+
+@app.route('/measurements',methods=["GET"])
+def measurements():
+    connection = engine.connect()
+    result = connection.execute("select measurement.measurement_name from measurement")
+    measurements = []
+    for row in result:
+        measurements.append(row['measurement_name'])
+    connection.close()
+    return jsonify({"measurements":measurements})
+
+@app.route('/ingredients',methods=["GET"])
+def ingredients():
+    connection = engine.connect()
+    result = connection.execute("select ingredient.ingredient_name from ingredient")
+    ingredients = []
+    for row in result:
+        ingredients.append(row['ingredient_name'])
+    connection.close()
+    return ingredients
+
+@app.route('/restrictions',methods=["GET"])
+def restrictions():
+    connection = engine.connect()
+    result = connection.execute("select userrestriction.restriction_name from userrestriction")
+    restrictions = []
+    for row in result:
+        restrictions.append(row['restriction_name'])
+    connection.close()
+    return restrictions
 
 @app.route('/generate_mealplan',methods=[""])
 def generateMealPlan():
