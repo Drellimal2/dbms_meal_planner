@@ -6,6 +6,7 @@
 </div>
 <div class="container">
     <span class="pull-left"><h2>Recipes</h2></span>
+    <span class="pull-right"><button class="btn btn-success btn-md"><a href="{{url_for('newRecipe')}}">Add Recipe</a></button></span>
 </div>
 <div class="container">
     <form action="{{ url_for('recipes') }}" method="post">
@@ -18,7 +19,7 @@
 </div>
 <div class="container">
     <form class="pull-right" action="{{url_for('filteredrecipes')}}" method="post">
-    <input type="text" name="calories"><button class="btn btn-default">Filter</button>
+    <input type="text" name="calories" placeholder="Filter by Calories"><button class="btn btn-default">Filter</button>
     </form>
     </div>
 <div class="container">
