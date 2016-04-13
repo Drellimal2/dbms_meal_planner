@@ -26,6 +26,23 @@ END //
 DELIMITER ;
 
 DELIMITER //
+CREATE PROCEDURE GetRecipesLike(IN name VARCHAR(120))
+BEGIN (
+    SELECT * from recipe WHERE recipe.recipe_name LIKE name
+    ORDER BY recipe.recipe_creationdate DESC
+);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE GetRecipeById(IN id INT)
+BEGIN (
+SELECT * FROM recipe WHERE recipe.recipe_id=id
+);
+END //
+DELIMETER ;
+
+DELIMITER //
 CREATE PROCEDURE GetAllUserRestrictions(IN firstname VARCHAR(255), IN lastname VARCHAR(255))
 BEGIN (SELECT userrestriction.restriction_name
 FROM user JOIN user_has_restriction JOIN userrestriction
@@ -41,11 +58,6 @@ FROM recipe
 WHERE recipe.recipe_caloriecount <= caloriecount);
 END //
 DELIMITER ;
-
-
-plan_meal_day(mealplan_id, mealplanday_id)
-use_recipe(mealplanday_id, recipe_id)
-use_ingredients(recipe_id, ingredient_id, measurement_id, ingredient_quantity)
 
 DELIMITER //
 CREATE PROCEDURE GetMealPlanIngredients(IN mlplnid INT)
@@ -84,7 +96,6 @@ BEGIN (SELECT mealplanday.mealplanday_id, mealplanday.day, mealplanday.mealtype
   )
 ); 
 END //
-
 DELIMITER ;
 
 DELIMITER //

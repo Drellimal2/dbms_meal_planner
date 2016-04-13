@@ -1,7 +1,7 @@
 import os
 from app import app
 from app import db
-from app.forms import SignUpForm, LoginForm, RecipeForm, IngredientForm
+from app.forms import SignUpForm, LoginForm, RecipeForm, RecipesForm, IngredientForm
 from flask import render_template, request, redirect, url_for, jsonify, Response
 import validators
 from sqlalchemy import text
@@ -93,26 +93,40 @@ def newIngredient():
     form = IngredientForm(request.form)
     return render_template("ingredient.html",form=form)
 
-@app.route('/users',methods=["GET"])
-def users():
-    connection = engine.connect()
-    result = connection.execute("select * from user")
-    users = []
-    for row in result:
-        users.append(row)
-    connection.close()
-    return render_template("users.html",users=users)
+# @app.route('/users',methods=["GET"])
+# def users():
+#     connection = engine.connect()
+#     result = connection.execute("select * from user")
+#     users = []
+#     for row in result:
+#         users.append(row)
+#     connection.close()
+#     return render_template("users.html",users=users)
 
-@app.route('/recipes', methods=["GET"])
+@app.route('/recipes', methods=["GET","POST"])
 def recipes():
-    connection = engine.connect()
-    result = connection.execute("select * from recipe order by recipe_creationdate desc")
-    recipes = []
-    for row in result:
-        recipes.append(row)
-    connection.close()
-    return render_template("recipes.html",recipes=recipes)
-
+    form = RecipesForm(request.form)
+    if request.method=="POST":
+        connection = engine.raw_connection()
+        cursor = connection.cursor()
+        cursor.callproc("GetRecipesLike",[str(form.name.data)])
+        result = cursor.fetchall()
+        cursor.close()
+        connection.commit()
+        recipes = []
+        for row in result:
+            recipes.append(row)
+        print recipes
+    # connection = engine.connect()
+    # result = connection.execute("select * from recipe order by recipe_creationdate desc")
+    # recipes = []
+    # for row in result:
+    #     recipes.append(row)
+    # connection.close()
+        return render_template("recipes.html",form=form,recipes=recipes)
+    else:
+        return render_template("recipes.html",form=form)
+        
 @app.route('/filteredrecipes',methods=["GET","POST"])
 def filteredrecipes():
     connection = engine.raw_connection()
@@ -127,6 +141,19 @@ def filteredrecipes():
     print recipes
     return render_template("recipes.html",recipes=recipes)
 
+@app.route('/recipedetails/<recipeid>',methods=["GET"])
+def recipedetails(recipeid):
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetRecipeById",[str(recipeid)])
+    result = cursor.fetchall()
+    cursor.close()
+    connection.commit()
+    recipes = []
+    for row in result:
+        recipes.append(row)
+    return render_template("recipedetails.html",recipes=recipes)
+
 @app.route('/measurements',methods=["GET"])
 def measurements():
     connection = engine.connect()
@@ -140,12 +167,13 @@ def measurements():
 @app.route('/ingredients',methods=["GET"])
 def ingredients():
     connection = engine.connect()
-    result = connection.execute("select ingredient.ingredient_name from ingredient")
+    result = connection.execute("select * from ingredient")
     ingredients = []
     for row in result:
-        ingredients.append(row['ingredient_name'])
+        if row['ingredient_id'] != 96:
+            ingredients.append(row['ingredient_name'])
     connection.close()
-    return ingredients
+    return jsonify({"ingredients":ingredients})
 
 @app.route('/restrictions',methods=["GET"])
 def restrictions():
