@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+  <h2>Online Meal Planner</h2>
+</div>
+<div class="container">
+    <span class="pull-left"><h2>Recipes</h2></span>
+    <form class="pull-right" action="{{url_for('filteredrecipes')}}" method="post">
+    <input type="text" name="calories"><button class="btn btn-default">Filter</button>
+    </form>
+    </div>
+<div class="container">
+<table>
+    <th> Name
+</th>
+<th>
+    Type
+</th>
+<th>
+    Serving
+</th>
+<th>
+    Preparation Time
+</th>
+<th>
+    Calorie Count
+</th>
+{% for recipe in recipes %}
+<TR>
+   <TD>{{recipe.recipe_name}}</TD>
+   <TD>{{recipe.recipe_type}}</TD>
+   <TD>{{recipe.recipe_serving}}</TD>
+   <TD>{{recipe.recipe_preptime}}</TD>
+   <td>{{recipe.recipe_caloriecount}}</td>
+</TR>
+{% endfor %}
+</table>
+</div>
+{% endblock %}
