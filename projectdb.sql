@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS user_has_restriction;
 DROP TABLE IF EXISTS follow_instruction;
 DROP TABLE IF EXISTS use_ingredients;
 DROP TABLE IF EXISTS within_kitchen;
+DROP TABLE IF EXISTS user_kitchen;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS mealplan;
 DROP TABLE IF EXISTS mealplanday;
@@ -31,13 +32,14 @@ PRIMARY KEY(user_id)
 
 CREATE TABLE mealplan(
 mealplan_id INT(11) NOT NULL UNIQUE AUTO_INCREMENT,
+mealplan_date DATE NOT NULL,
 PRIMARY KEY (mealplan_id)
 );
 
 CREATE TABLE mealplanday(
 mealplanday_id INTEGER(11) NOT NULL UNIQUE AUTO_INCREMENT,
 day VARCHAR(30) NOT NULL,
-mealtype VARCHAR(50) NOT NULL,
+mealtype VARCHAR(30) NOT NULL,
 caloriecount INT(11) NOT NULL,
 PRIMARY KEY(mealplanday_id)
 );
@@ -149,5 +151,13 @@ ingredient_id INT(11) NOT NULL,
 kitchen_id INT (11) NOT NULL,
 PRIMARY KEY(ingredient_id, kitchen_id),
 FOREIGN KEY(ingredient_id) references ingredient(ingredient_id) on update cascade on delete cascade,
+FOREIGN KEY(kitchen_id) references kitchen(kitchen_id) on update cascade on delete restrict
+);
+
+CREATE TABLE user_kitchen(
+user_id INT(11) NOT NULL,
+kitchen_id INT(11) NOT NULL,
+PRIMARY KEY(user_id,kitchen_id),
+FOREIGN KEY(user_id) references user(user_id) on update cascade on delete cascade,
 FOREIGN KEY(kitchen_id) references kitchen(kitchen_id) on update cascade on delete restrict
 );

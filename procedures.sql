@@ -41,3 +41,33 @@ FROM recipe
 WHERE recipe.caloriecount <= caloriecount);
 END //
 DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE GetMealPlanForWeek(IN mlplnid INT)
+BEGIN (SELECT mealplanday.mealplanday_id, mealplanday.day, mealplanday.mealtype
+  FROM mealplanday
+  WHERE mealplanday.mealplanday_id IN
+  (
+      SELECT plan_meal_day.mealplanday_id
+      FROM plan_meal_day
+  WHERE mealplan_id = mlplnid)
+  )
+);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE GetMealPlanUnderSpecifiedCalorieCount(IN mlplnid INT, IN caloriecount INT)
+BEGIN (SELECT *
+  FROM mealplanday
+  WHERE mealplanday.mealplanday_id IN
+  (
+      SELECT plan_meal_day.mealplanday_id
+      FROM plan_meal_day
+  WHERE mealplan_id = mlplnid)
+  AND mealplanday.caloriecount<=caloriecount
+  )
+);
+END //
+DELIMITER ;

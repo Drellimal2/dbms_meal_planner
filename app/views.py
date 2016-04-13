@@ -9,6 +9,7 @@ from sqlalchemy import create_engine
 from werkzeug import secure_filename
 import json
 import time
+import random
 
 engine = create_engine('mysql://project:project@localhost:3306/epicmealplan')
 
@@ -53,6 +54,21 @@ def login():
         return redirect(url_for('home'))
     else:
         return render_template("login.html",form=form)
+
+@app.route('/generate_mealplan',methods=["GET"])
+def newMealPlan():
+    firstconnection = engine.connect()
+    result = firstconnection.execute("select mealplanday.mealplanday_id from mealplanday")
+    mealplandays = []
+    for row in result:
+        mealplandays.append(row['mealplanday_id'])
+    firstconnection.close()
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetMealPlanForWeek", [random(mealplandays)])
+    cursor.close()
+    connection.commit()
+    return render_template("mealplan.html")
 
 @app.route('/create_recipe',methods=["GET","POST"])
 def newRecipe():
@@ -126,10 +142,6 @@ def restrictions():
         restrictions.append(row['restriction_name'])
     connection.close()
     return restrictions
-
-@app.route('/generate_mealplan',methods=[""])
-def generateMealPlan():
-    return render_template("")
 
 @app.route('/kitchen',methods=[""])
 def kitchen():
