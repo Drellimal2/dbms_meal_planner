@@ -30,5 +30,10 @@
         </h3>
     </div>
     {% endfor %}
+    <h4>Instructions</h4>
+    {% for  instr in instrs%}
+        <div>{{instr[1]}}. {{instr[0]}}</div>
+    
+    {% endfor %}
 </div>
 {% endblock %}

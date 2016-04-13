@@ -70,6 +70,7 @@ angular.module('MealPlanner').factory('Service',['$http','$q',function($http,$q)
             });
             return deferred.promise;
         }
+        
     }
 }]);
 

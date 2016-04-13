@@ -9,10 +9,15 @@
       Generate MealPlan</a></button>
     <div>
       {% raw %}
-      <div class='col col-md-3'>
-        <label>Breakfast</label>
+      <style>
+        .col div{
+          height : 80px;
+        }
+      </style>
+      <div class='col col-md-4'>
+        <label>Day | Breakfast</label>
         <div ng-repeat="breakfast in breakfasts">
-          {{breakfast[0]}}
+          {{ $index + 1 }} | {{ breakfast[0]}}
         </div>
       </div>
       
@@ -30,7 +35,7 @@
         </div>
       </div>
       
-      <div class='col col-md-3'>
+      <div class='col col-md-2'>
         <label>Snack</label>
         <div ng-repeat="snack in snacks">
           {{snack[0]}}
