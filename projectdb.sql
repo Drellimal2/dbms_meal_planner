@@ -137,7 +137,7 @@ FOREIGN KEY(instruction_id) references instruction(instruction_id) on update cas
 
 CREATE TABLE use_ingredients(
 recipe_id INT(11) NOT NULL,
-ingredient_id INT (11) NOT NULL,
+ingredient_id INT(11) NOT NULL,
 measurement_id INT(11) NOT NULL,
 ingredient_quantity DECIMAL(11,2) NOT NULL,
 PRIMARY KEY (recipe_id, ingredient_id,measurement_id),
