@@ -65,7 +65,7 @@ def newMealPlan():
     firstconnection.close()
     connection = engine.raw_connection()
     cursor = connection.cursor()
-    cursor.callproc("GetMealPlanForWeek", [random(mealplandays)])
+    cursor.callproc("GetMealPlanForWeek", [random.choice(mealplandays)])
     cursor.close()
     connection.commit()
     return render_template("mealplan.html")
@@ -96,22 +96,36 @@ def newIngredient():
 @app.route('/users',methods=["GET"])
 def users():
     connection = engine.connect()
-    result = connection.execute("select user.user_firstname,user_lastname from user")
+    result = connection.execute("select * from user")
     users = []
     for row in result:
-        users.append(row['user_firstname']+" "+row['user_lastname'])
+        users.append(row)
     connection.close()
-    return users
+    return render_template("users.html",users=users)
 
 @app.route('/recipes', methods=["GET"])
 def recipes():
     connection = engine.connect()
-    result = connection.execute("select recipe.recipe_name from recipe")
+    result = connection.execute("select * from recipe order by recipe_creationdate desc")
     recipes = []
     for row in result:
-        recipes.append(row['recipe_name'])
+        recipes.append(row)
     connection.close()
-    return recipes
+    return render_template("recipes.html",recipes=recipes)
+
+@app.route('/filteredrecipes',methods=["GET","POST"])
+def filteredrecipes():
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetUnderSpecficCalorieCount",[str(request.form['calories'])])
+    result = cursor.fetchall()
+    cursor.close()
+    connection.commit()
+    recipes = []
+    for row in result:
+        recipes.append(row)
+    print recipes
+    return render_template("recipes.html",recipes=recipes)
 
 @app.route('/measurements',methods=["GET"])
 def measurements():

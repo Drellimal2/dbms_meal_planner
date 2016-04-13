@@ -5,6 +5,6 @@ app = Flask(__name__)
 db = SQLAlchemy(app)
 
 app.secret_key ="REST SECRET"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://project:project@localhost:8080/epicmealplan'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://project:project@localhost:8081/epicmealplan'
 
 from app import views

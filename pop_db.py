@@ -8,8 +8,8 @@ Created on Sun Apr 10 23:55:10 2016
 from random import randint, sample
 from faker import Factory
 
-NUM_USERS = 500000
-NUM_RECIPES = 1000000
+NUM_USERS = 500
+NUM_RECIPES = 1000
 
 
 ingredient_list = """asparagus
@@ -229,6 +229,20 @@ def generate_user(num):
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
 
+def generate_kitchen():
+	f = open("db_data.sql", "a+")
+	table = "kitchen"
+	table2 = "user_kitchen"
+	fields = ["kitchen_id"]
+	fields2 = ["kitchen_id", "user_id"]
+	for x in xrange(1, NUM_USERS):
+		vals = [str(x)]
+		vals2 = [str(x), str(x)]
+		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
+		f.write(BASE_INSERT.format(table2, ", ".join(fields2), ", ".join(vals2))+"\n")
+	f.close()
+
+
 def generate_ingr():
 	f = open("db_data.sql", "a+")
 	table = "ingredient"
@@ -323,6 +337,42 @@ def generate_ingr_rec():
 					used.add(ingr)
 					f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
 					break
+	f.close()
+
+MEALPLANS= 10
+MEALPLANDAYS=35
+
+def generate_mealplanday():
+	f = open("db_data.sql","a+")
+	table = "mealplanday"
+	fields = ["day","mealtype","caloriecount"]
+	types = ["Breakfast", "Lunch", "Dinner", "Snack"]
+	days =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"]
+	for x in range(0,MEALPLANDAYS-1):
+		mealtype = add_quotes(types[randint(0,3)])
+		mealdays = add_quotes(days[randint(0,6)])
+		vals = [mealdays,mealtype]
+		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
+	f.close()
+
+
+
+def generate_mealplan():
+	f = open("db_data.sql","a+")
+	table = "mealplan"
+	f.close()
+	
+			
+def generate_planmeal():
+	f = open("db_data.sql","a+")
+	table = "plan_meal_day"
+	fields =["mealplan_id","mealplanday_id"]
+	for x in range(0,MEALPLANS-1):
+		mealplandays = randint(1,MEALPLANDAYS)
+		for y in range(mealplandays):
+			vals = [str(x),str(mealplandays)]
+			f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
+			break
 	f.close()
 
 generate_user(NUM_USERS)

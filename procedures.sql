@@ -36,12 +36,36 @@ DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetUnderSpecficCalorieCount(IN caloriecount INT(11))
-BEGIN (SELECT recipe.recipe_name
+BEGIN (SELECT *
 FROM recipe
-WHERE recipe.caloriecount <= caloriecount);
+WHERE recipe.recipe_caloriecount <= caloriecount);
 END //
 DELIMITER ;
 
+DELIMITER //
+CREATE PROCEDURE GetMealPlanIngredients(IN mlplnid INT)
+BEGIN (SELECT use_ingredients.ingredient_id
+    FROM use_ingredients
+    WHERE use_ingredients.recipe_id IN
+    (
+        SELECT  use_recipe.recipe_id
+        FROM (
+            SELECT * FROM plan_meal_day
+            WHERE mealplan_id = mlplnid) AS mealplanrec
+        JOIN use_recipe
+        ON mealplanrec.recipe_id = use_recipe.recipe_id
+    ) GROUP BY use_ingredients.ingredient_id
+);
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE GetWeekRecipesByType(IN mltyp VARCHAR(50))
+BEGIN (SELECT * FROM recipe WHERE recipe.recipe_type = mltyp
+ORDER BY RAND()
+LIMIT 7);
+END //
+DELIMETER ;
 
 DELIMITER //
 CREATE PROCEDURE GetMealPlanForWeek(IN mlplnid INT)
