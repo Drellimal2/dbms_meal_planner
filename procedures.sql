@@ -51,7 +51,7 @@ BEGIN (
 SELECT * FROM recipe WHERE recipe.recipe_id=id
 );
 END //
-DELIMETER ;
+DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetIngrMeasurFromRecipe(IN id INT)
@@ -64,7 +64,7 @@ AND measurement.measurement_id=use_ingredients.measurement_id
 AND ingredient.ingredient_id=use_ingredients.ingredient_id
 );
 END //
-DELIMETER ;
+DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetAllUserRestrictions(IN firstname VARCHAR(255), IN lastname VARCHAR(255))
@@ -111,11 +111,11 @@ DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetWeekRecipesByType(IN mltyp VARCHAR(50))
-BEGIN (SELECT * FROM recipe WHERE recipe.recipe_type = mltyp
+BEGIN (SELECT recipe.recipe_name, recipe.recipe_id FROM recipe WHERE recipe.recipe_type = mltyp
 ORDER BY RAND()
 LIMIT 7);
 END //
-DELIMETER ;
+DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetMealPlanForWeek(IN mlplnid INT)
@@ -152,10 +152,10 @@ AFTER insert ON user
 FOR EACH ROW
 BEGIN
 INSERT into kitchen values (0)
-INSERT into user_kitchen values(
-(SELECT LAST_INSERT_ID() FROM user LIMIT (1)
+INSERT into user_kitchen(kitchen_id) values(
+(SELECT LAST_INSERT_ID() FROM user LIMIT 1
 )
-(SELECT LAST_INSERT_ID() FROM kitchen LIMIT (1)
+(SELECT LAST_INSERT_ID() FROM kitchen LIMIT 1
 )
 );
 
