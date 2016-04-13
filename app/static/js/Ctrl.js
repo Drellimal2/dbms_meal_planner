@@ -80,3 +80,9 @@ angular.module('MealPlanner').controller('IngredientCtrl',['$scope','Service',fu
         $scope.fields.splice(selectField);
     };
 }]);
+
+angular.module('MealPlanner').controller('RecipesCtrl',['$scope','Service',function($scope,Service){
+    Service.getRecipes().then(function(recipes){
+        $scope.recipes = recipes;
+    })
+}]);

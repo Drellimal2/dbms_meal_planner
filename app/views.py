@@ -9,8 +9,9 @@ from sqlalchemy import create_engine
 from werkzeug import secure_filename
 import json
 import time
+import random
 
-engine = create_engine('mysql://project:project@localhost:3306/epicmealplan')
+engine = create_engine('mysql://project:project@localhost:8081/epicmealplan')
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif','png'])
 
@@ -54,6 +55,21 @@ def login():
     else:
         return render_template("login.html",form=form)
 
+@app.route('/generate_mealplan',methods=["GET"])
+def newMealPlan():
+    firstconnection = engine.connect()
+    result = firstconnection.execute("select mealplanday.mealplanday_id from mealplanday")
+    mealplandays = []
+    for row in result:
+        mealplandays.append(row['mealplanday_id'])
+    firstconnection.close()
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetMealPlanForWeek", [random.choice(mealplandays)])
+    cursor.close()
+    connection.commit()
+    return render_template("mealplan.html")
+
 @app.route('/create_recipe',methods=["GET","POST"])
 def newRecipe():
     form = RecipeForm(request.form)
@@ -80,22 +96,36 @@ def newIngredient():
 @app.route('/users',methods=["GET"])
 def users():
     connection = engine.connect()
-    result = connection.execute("select user.user_firstname,user_lastname from user")
+    result = connection.execute("select * from user")
     users = []
     for row in result:
-        users.append(row['user_firstname']+" "+row['user_lastname'])
+        users.append(row)
     connection.close()
-    return users
+    return render_template("users.html",users=users)
 
 @app.route('/recipes', methods=["GET"])
 def recipes():
     connection = engine.connect()
-    result = connection.execute("select recipe.recipe_name from recipe")
+    result = connection.execute("select * from recipe order by recipe_creationdate desc")
     recipes = []
     for row in result:
-        recipes.append(row['recipe_name'])
+        recipes.append(row)
     connection.close()
-    return recipes
+    return render_template("recipes.html",recipes=recipes)
+
+@app.route('/filteredrecipes',methods=["GET","POST"])
+def filteredrecipes():
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetUnderSpecficCalorieCount",[str(request.form['calories'])])
+    result = cursor.fetchall()
+    cursor.close()
+    connection.commit()
+    recipes = []
+    for row in result:
+        recipes.append(row)
+    print recipes
+    return render_template("recipes.html",recipes=recipes)
 
 @app.route('/measurements',methods=["GET"])
 def measurements():
@@ -126,10 +156,6 @@ def restrictions():
         restrictions.append(row['restriction_name'])
     connection.close()
     return restrictions
-
-@app.route('/generate_mealplan',methods=[""])
-def generateMealPlan():
-    return render_template("")
 
 @app.route('/kitchen',methods=[""])
 def kitchen():

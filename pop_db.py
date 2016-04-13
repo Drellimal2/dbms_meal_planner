@@ -8,8 +8,8 @@ Created on Sun Apr 10 23:55:10 2016
 from random import randint, sample
 from faker import Factory
 
-NUM_USERS = 500000
-NUM_RECIPES = 1000000
+NUM_USERS = 500
+NUM_RECIPES = 1000
 
 
 ingredient_list = """asparagus
@@ -229,14 +229,28 @@ def generate_user(num):
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
 
+def generate_kitchen():
+	f = open("db_data.sql", "a+")
+	table = "kitchen"
+	table2 = "user_kitchen"
+	fields = ["kitchen_id"]
+	fields2 = ["kitchen_id", "user_id"]
+	for x in xrange(1, NUM_USERS):
+		vals = [str(x)]
+		vals2 = [str(x), str(x)]
+		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
+		f.write(BASE_INSERT.format(table2, ", ".join(fields2), ", ".join(vals2))+"\n")
+	f.close()
+
+
 def generate_ingr():
 	f = open("db_data.sql", "a+")
 	table = "ingredient"
 	fields = ['ingredient_name', 'ingredient_type']
-	types = ['"meat"', '"gluten"', '"poultry"', '"shellfish"', '"fish"', '"nuts"', '"dairy"', '"pork"', '"beef"', '"wheat"']
+	types = ['meat', 'gluten', 'poultry', 'shellfish', 'fish', 'nuts', 'dairy', 'pork', 'beef', 'wheat']
 	ingredients = ingredient_list.split("\n")
 	for x in range(len(ingredients)):
-		vals = [ingredients[x], types[randint(0,9)]]
+		vals = [add_quotes(ingredients[x]), add_quotes(types[randint(0,9)])]
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
 
@@ -252,7 +266,7 @@ def generate_recipe():
 		preptime = str(randint(10, 250))
 		calories = str(randint(250, 2000))
 		serving = str(randint(1,5))
-		rec_type = str(types[randint(0,3)])
+		rec_type = add_quotes(types[randint(0,3)])
 		recipe = add_quotes(recipes[x].strip())
 		vals = [recipe, rec_type, preptime, image, serving, add_quotes(fake.date()), calories]
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
@@ -262,7 +276,8 @@ def generate_recipe():
 		calories = str(randint(250, 2000))
 		serving = str(randint(1,5))
 		recipe = add_quotes(fake.word())
-		vals = [recipe, preptime, image, serving, fake.date(), calories]
+		rec_type = add_quotes(types[randint(0,3)])
+		vals = [recipe, rec_type, preptime, image, serving, add_quotes(fake.date()), calories]
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
 
@@ -322,6 +337,42 @@ def generate_ingr_rec():
 					used.add(ingr)
 					f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
 					break
+	f.close()
+
+MEALPLANS= 10
+MEALPLANDAYS=35
+
+def generate_mealplanday():
+	f = open("db_data.sql","a+")
+	table = "mealplanday"
+	fields = ["day","mealtype","caloriecount"]
+	types = ["Breakfast", "Lunch", "Dinner", "Snack"]
+	days =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"]
+	for x in range(0,MEALPLANDAYS-1):
+		mealtype = add_quotes(types[randint(0,3)])
+		mealdays = add_quotes(days[randint(0,6)])
+		vals = [mealdays,mealtype]
+		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
+	f.close()
+
+
+
+def generate_mealplan():
+	f = open("db_data.sql","a+")
+	table = "mealplan"
+	f.close()
+	
+			
+def generate_planmeal():
+	f = open("db_data.sql","a+")
+	table = "plan_meal_day"
+	fields =["mealplan_id","mealplanday_id"]
+	for x in range(0,MEALPLANS-1):
+		mealplandays = randint(1,MEALPLANDAYS)
+		for y in range(mealplandays):
+			vals = [str(x),str(mealplandays)]
+			f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
+			break
 	f.close()
 
 generate_user(NUM_USERS)
