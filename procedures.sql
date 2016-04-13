@@ -1,8 +1,19 @@
 DROP PROCEDURE IF EXISTS RegisterUser;
 DROP PROCEDURE IF EXISTS LoginUser;
 DROP PROCEDURE IF EXISTS AddRecipe;
+DROP PROCEDURE IF EXISTS GetRecipesLike;
+DROP PROCEDURE IF EXISTS GetRecipeById;
+DROP PROCEDURE IF EXISTS GetIngrMeasurFromRecipe;
 DROP PROCEDURE IF EXISTS GetAllUserRestrictions;
+DROP PROCEDURE IF EXISTS ShowAvoidedIngredients;
 DROP PROCEDURE IF EXISTS GetUnderSpecficCalorieCount;
+DROP PROCEDURE IF EXISTS GetMealPlanIngredients;
+DROP PROCEDURE IF EXISTS GetWeekRecipesByType;
+DROP PROCEDURE IF EXISTS GetMealPlanForWeek;
+DROP PROCEDURE IF EXISTS GetMealPlanUnderSpecifiedCalorieCount;
+DROP TRIGGER IF kitchen_trigger;
+DROP PROCEDURE IF EXISTS recipeinstruction;
+
 
 /* Procedures */
 
@@ -40,20 +51,20 @@ BEGIN (
 SELECT * FROM recipe WHERE recipe.recipe_id=id
 );
 END //
-DELIMETER ;
+DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetIngrMeasurFromRecipe(IN id INT)
 BEGIN (
-SELECT measurement.measurement_name, ingredient.ingredient_name FROM measurement 
+SELECT measurement.measurement_name, ingredient.ingredient_name, use_ingredients.ingredient_quantity FROM measurement 
 JOIN ingredient JOIN use_ingredients ON
 use_ingredients.recipe_id IN 
-(SELECT use_ingredients.recipe_id FROM use_ingredients WHERE use_ingredients.recipe_id=1000)
+(SELECT use_ingredients.recipe_id FROM use_ingredients WHERE use_ingredients.recipe_id=id)
 AND measurement.measurement_id=use_ingredients.measurement_id 
 AND ingredient.ingredient_id=use_ingredients.ingredient_id
 );
 END //
-DELIMETER ;
+DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetAllUserRestrictions(IN firstname VARCHAR(255), IN lastname VARCHAR(255))
@@ -64,14 +75,14 @@ WHERE user.user_firstname=firstname AND user.user_lastname=lastname);
 END //
 DELIMITER ;
 
-DELIMETER //
+DELIMITER //
 CREATE PROCEDURE ShowAvoidedIngredients(IN restriction VARCHAR(50))
 BEGIN (SELECT ingredient.ingredient_name
-FROM userrestriction JOIN limits JOIN Ingredient
+FROM userrestriction JOIN limits JOIN ingredient
 ON userrestriction.restriction_id=limits.restriction_id AND limits.ingredient_id=ingredient.ingredient_id 
 WHERE userrestriction.restriction_name = restriction);
 END //
-DELIMITER;
+DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetUnderSpecficCalorieCount(IN caloriecount INT(11))
@@ -100,11 +111,11 @@ DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetWeekRecipesByType(IN mltyp VARCHAR(50))
-BEGIN (SELECT * FROM recipe WHERE recipe.recipe_type = mltyp
+BEGIN (SELECT recipe.recipe_name, recipe.recipe_id FROM recipe WHERE recipe.recipe_type = mltyp
 ORDER BY RAND()
 LIMIT 7);
 END //
-DELIMETER ;
+DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE GetMealPlanForWeek(IN mlplnid INT)
@@ -135,32 +146,29 @@ BEGIN (SELECT *
 END //
 DELIMITER ;
 
-DELIMITER//
+DELIMITER //
 CREATE TRIGGER kitchen_trigger
 AFTER insert ON user
 FOR EACH ROW
 BEGIN
 INSERT into kitchen values (0)
-INSERT into user_kitchen values(
-(SELECT LAST_INSERT_ID() FROM user LIMIT (1)
+INSERT into user_kitchen(kitchen_id) values(
+(SELECT LAST_INSERT_ID() FROM user LIMIT 1
 )
-(SELECT LAST_INSERT_ID() FROM kitchen LIMIT (1)
+(SELECT LAST_INSERT_ID() FROM kitchen LIMIT 1
 )
 );
 
-END//
-DELIMITER;
+END //
+DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE recipeinstruction (IN recipe_id INT ) 
+CREATE PROCEDURE recipeinstruction (IN recp_id INT ) 
 BEGIN (
-
-)
-
-
-
-
-
-
-END//
-DELIMITER;
+SELECT instruction.instruction_details, follow_instruction.instruction_order
+FROM follow_instruction JOIN instruction
+ON follow_instruction.instruction_id = instruction.instruction_id
+WHERE follow_instruction.recipe_id = recp_id
+ORDER BY follow_instruction.instruction_order ASC);
+END //
+DELIMITER ;

@@ -56,6 +56,19 @@ angular.module('MealPlanner').factory('Service',['$http','$q',function($http,$q)
                 deferred.reject(err);
             });
             return deferred.promise;
+        },
+        getMealPlanRecipes : function(mtype){
+            var deferred = $q.defer();
+            $http.get('/getmealplanrecipes/' + mtype)
+            .success(function(data){
+                console.log("rad");
+                console.log(data);
+                deferred.resolve(data);
+            })
+            .error(function(err){
+                deferred.reject(err);
+            });
+            return deferred.promise;
         }
     }
 }]);
@@ -130,3 +143,54 @@ angular.module('MealPlanner').controller('NewRecipeCtrl', ['$scope', 'Service', 
 
 
 }]);
+
+
+
+angular.module('MealPlanner').controller('GenMealPlanCtrl', ['$scope', 'Service', function ($scope, Service){
+	
+	
+	Service.getMealPlanRecipes('Breakfast').then(function (recipes) {
+		console.log(recipes);
+		$scope.breakfasts = recipes.recipes;
+	});
+
+    Service.getMealPlanRecipes('Lunch').then(function (recipes) {
+		console.log(recipes);
+		$scope.lunches = recipes.recipes;
+	});
+	Service.getMealPlanRecipes('Dinner').then(function (recipes) {
+		console.log(recipes);
+		$scope.dinners = recipes.recipes;
+	});
+	Service.getMealPlanRecipes('Snack').then(function (recipes) {
+		console.log(recipes);
+		$scope.snacks = recipes.recipes;
+	});
+
+	$scope.ingredient= [];
+    $scope.instructions = [];
+    
+	$scope.dostuff = function(){
+	    Service.getMealPlanRecipes('Breakfast').then(function (recipes) {
+		console.log(recipes);
+		$scope.breakfasts = recipes.recipes;
+    	});
+    
+        Service.getMealPlanRecipes('Lunch').then(function (recipes) {
+    		console.log(recipes);
+    		$scope.lunches = recipes.recipes;
+    	});
+    	Service.getMealPlanRecipes('Dinner').then(function (recipes) {
+    		console.log(recipes);
+    		$scope.dinners = recipes.recipes;
+    	});
+    	Service.getMealPlanRecipes('Snack').then(function (recipes) {
+    		console.log(recipes);
+    		$scope.snacks = recipes.recipes;
+    	});
+	};
+    
+    
+
+}]);
+

@@ -5,25 +5,38 @@
   <h2>Meal Plan</h2>
 </div>
 <div class="container" ng-controller="GenMealPlanCtrl">
-    <button class="btn btn-default"><a href="{{url_for('newMealPlan')}}">
+    <button class="btn btn-default"><a href="{{url_for('newMealPlan')}}" ng-click="dostuff()">
       Generate MealPlan</a></button>
     <div>
+      {% raw %}
       <div class='col col-md-3'>
-        rada
+        <label>Breakfast</label>
+        <div ng-repeat="breakfast in breakfasts">
+          {{breakfast[0]}}
+        </div>
       </div>
       
       <div class='col col-md-3'>
-        tere
+        <label>Lunch</label>
+        <div ng-repeat="lunch in lunches">
+          {{lunch[0]}}
+        </div>
       </div>
       
       <div class='col col-md-3'>
-        adsf
+        <label>Dinner</label>
+        <div ng-repeat="dinner in dinners">
+          {{dinner[0]}}
+        </div>
       </div>
       
       <div class='col col-md-3'>
-        adf
+        <label>Snack</label>
+        <div ng-repeat="snack in snacks">
+          {{snack[0]}}
+        </div>
       </div>
-      
+      {% endraw %}
     </div>
 </div>
 {% endblock %}

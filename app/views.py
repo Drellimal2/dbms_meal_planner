@@ -11,7 +11,7 @@ import json
 import time
 import random
 
-engine = create_engine('mysql://project:project@localhost:3306/epicmealplan')
+engine = create_engine('mysql://project:project@localhost:8080/epicmealplan')
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif','png'])
 
@@ -95,11 +95,6 @@ def newRecipe():
     else:
         return render_template("recipe.html",form=form)
 
-@app.route('/create_ingredient',methods=["GET","POST"])
-def newIngredient():
-    form = IngredientForm(request.form)
-    return render_template("ingredient.html",form=form)
-
 # @app.route('/users',methods=["GET"])
 # def users():
 #     connection = engine.connect()
@@ -109,6 +104,26 @@ def newIngredient():
 #         users.append(row)
 #     connection.close()
 #     return render_template("users.html",users=users)
+
+@app.route('/getmealplanrecipes/<mtype>', methods=["GET","POST"])
+def getmealplanrecipes(mtype):
+    form = RecipesForm(request.form)
+    if request.method=="GET":
+        connection = engine.raw_connection()
+        cursor = connection.cursor()
+        
+        cursor.callproc("GetWeekRecipesByType",[str(mtype)])
+        result = cursor.fetchall()
+        print result
+        
+        cursor.close()
+        connection.commit()
+        recipes = []
+        for row in result:
+            recipes.append(row)
+        print recipes
+        return jsonify({"recipes":recipes})
+
 
 @app.route('/recipes', methods=["GET","POST"])
 def recipes():
