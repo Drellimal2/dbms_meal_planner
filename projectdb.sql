@@ -134,11 +134,13 @@ FOREIGN KEY(instruction_id) references instruction(instruction_id) on update cas
 
 CREATE TABLE use_ingredients(
 recipe_id INT(11) NOT NULL,
-ingredient_id INT (11) NOT NULL,
+ingredient_id INT(11) NOT NULL,
+measurement_id INT(11) NOT NULL,
 ingredient_quantity DECIMAL(11,2) NOT NULL,
 PRIMARY KEY (recipe_id, ingredient_id),
 FOREIGN KEY(recipe_id) references recipe(recipe_id) on update cascade on delete cascade,
-FOREIGN KEY(ingredient_id) references ingredient(ingredient_id) on update cascade on delete restrict
+FOREIGN KEY(ingredient_id) references ingredient(ingredient_id) on update cascade on delete restrict,
+FOREIGN KEY(measurement_id) references measurement(measurement_id) on update cascade on delete restrict
 );
 
 CREATE TABLE within_kitchen(

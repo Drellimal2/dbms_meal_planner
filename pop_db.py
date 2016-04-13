@@ -233,10 +233,10 @@ def generate_ingr():
 	f = open("db_data.sql", "a+")
 	table = "ingredient"
 	fields = ['ingredient_name', 'ingredient_type']
-	types = ['"meat"', '"gluten"', '"poultry"', '"shellfish"', '"fish"', '"nuts"', '"dairy"', '"pork"', '"beef"', '"wheat"']
+	types = ['meat', 'gluten', 'poultry', 'shellfish', 'fish', 'nuts', 'dairy', 'pork', 'beef', 'wheat']
 	ingredients = ingredient_list.split("\n")
 	for x in range(len(ingredients)):
-		vals = [ingredients[x], types[randint(0,9)]]
+		vals = [add_quotes(ingredients[x]), add_quotes(types[randint(0,9)])]
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
 
@@ -252,7 +252,7 @@ def generate_recipe():
 		preptime = str(randint(10, 250))
 		calories = str(randint(250, 2000))
 		serving = str(randint(1,5))
-		rec_type = str(types[randint(0,3)])
+		rec_type = add_quotes(types[randint(0,3)])
 		recipe = add_quotes(recipes[x].strip())
 		vals = [recipe, rec_type, preptime, image, serving, add_quotes(fake.date()), calories]
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
@@ -262,7 +262,8 @@ def generate_recipe():
 		calories = str(randint(250, 2000))
 		serving = str(randint(1,5))
 		recipe = add_quotes(fake.word())
-		vals = [recipe, preptime, image, serving, fake.date(), calories]
+		rec_type = add_quotes(types[randint(0,3)])
+		vals = [recipe, preptime, image, serving, add_quotes(fake.date()), calories]
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
 
