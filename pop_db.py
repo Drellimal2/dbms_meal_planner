@@ -1,15 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Apr 10 23:55:10 2016
-
-@author: Dane
-"""
-
 from random import randint, sample
 from faker import Factory
 
-NUM_USERS = 500
-NUM_RECIPES = 1000
+NUM_USERS = 500000
+NUM_RECIPES = 1000000
 
 
 ingredient_list = """asparagus
@@ -361,8 +354,8 @@ def generate_mealplan():
 	f = open("db_data.sql","a+")
 	table = "mealplan"
 	f.close()
-	
-			
+
+
 def generate_planmeal():
 	f = open("db_data.sql","a+")
 	table = "plan_meal_day"
